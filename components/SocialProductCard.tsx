@@ -12,8 +12,7 @@ const SocialProductCard: React.FC<SocialProductCardProps> = ({ product, onAddToC
     <div className="group relative bg-[#0a0a0a] border border-gold/10 overflow-hidden flex flex-col h-full hover:border-gold/30 transition-all duration-500">
       <div className="absolute top-3 left-3 z-20">
         <div className="bg-black/80 backdrop-blur-sm border border-gold/20 px-2 py-1 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 bg-gold rounded-full"></div>
-          <span className="text-[7px] font-bold text-white uppercase tracking-widest">Shop the Look</span>
+          <span className="text-[7px] font-bold text-white uppercase tracking-widest">Edición Especial</span>
         </div>
       </div>
 
@@ -40,7 +39,6 @@ const SocialProductCard: React.FC<SocialProductCardProps> = ({ product, onAddToC
             <p className="text-gold font-bold text-xs">
               {typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : 'Consultar'}
             </p>
-            <span className="text-[8px] text-gray-600 uppercase tracking-tighter">Social Sync</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
@@ -48,7 +46,7 @@ const SocialProductCard: React.FC<SocialProductCardProps> = ({ product, onAddToC
               onClick={() => product.price !== 'consultar' && onAddToCart(product)}
               className="bg-gold text-black py-2 text-[9px] font-bold uppercase tracking-wider hover:bg-white transition-colors"
             >
-              Comprar
+              Añadir
             </button>
             <a 
               href={product.link}
@@ -56,7 +54,7 @@ const SocialProductCard: React.FC<SocialProductCardProps> = ({ product, onAddToC
               rel="noopener noreferrer"
               className="border border-white/20 text-white py-2 text-[9px] font-bold uppercase tracking-wider text-center hover:bg-white/10 transition-colors"
             >
-              Ver Post
+              Detalles
             </a>
           </div>
         </div>

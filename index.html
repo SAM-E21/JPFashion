@@ -1,10 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JP Fashion | Luxury Women's Boutique</title>
+    <title>JP Fashion | Elegancia que define tu estilo</title>
+    <meta name="description" content="JP Fashion - Boutique de lujo con curaduría exclusiva en moda femenina.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="JP Fashion | Boutique de Lujo">
+    <meta property="og:description" content="Elegancia que define tu estilo. Colecciones exclusivas para la mujer moderna.">
+    <meta property="og:image" content="https://fowudbobxctpxguzpirh.supabase.co/storage/v1/object/public/imagenes/foto2.jpeg">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,6 +19,7 @@
             font-family: 'Montserrat', sans-serif;
             background-color: #000;
             color: #fff;
+            margin: 0;
         }
         h1, h2, h3, h4, .font-serif {
             font-family: 'Playfair Display', serif;
@@ -24,18 +32,6 @@
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in { animation: fadeIn 1.2s ease-out forwards; }
-
-        @keyframes slide-left {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-        .animate-slide-left { animation: slide-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-
         #initial-loader {
             position: fixed;
             inset: 0;
@@ -45,8 +41,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.6s ease-out;
         }
+        
+        @keyframes loading-bar {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .animate-loading { animation: loading-bar 2s ease-in-out infinite; }
     </style>
 <script type="importmap">
 {
@@ -61,15 +63,12 @@
 </script>
 </head>
 <body class="overflow-x-hidden">
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0"></script>
-
     <div id="initial-loader">
-        <h1 class="text-4xl font-serif text-gold tracking-[0.3em] mb-4 animate-pulse">JP FASHION</h1>
+        <h1 class="text-4xl font-serif text-gold tracking-[0.3em] mb-4">JP FASHION</h1>
         <div class="w-48 h-px bg-gold/20 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gold animate-[loading_2s_ease-in-out_infinite]"></div>
+            <div class="absolute inset-0 bg-gold animate-loading"></div>
         </div>
-        <p class="text-[9px] uppercase tracking-[0.5em] text-gray-500 mt-6">Luxury Experience</p>
+        <p class="text-[9px] uppercase tracking-[0.5em] text-gray-500 mt-6 italic">Elegancia que define tu estilo</p>
     </div>
 
     <script>
@@ -77,17 +76,10 @@
             const loader = document.getElementById('initial-loader');
             setTimeout(() => {
                 loader.style.opacity = '0';
-                setTimeout(() => loader.remove(), 800);
-            }, 1000);
+                setTimeout(() => loader.remove(), 600);
+            }, 800);
         });
     </script>
-    
-    <style>
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-    </style>
 
     <div id="root"></div>
 </body>

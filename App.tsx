@@ -5,7 +5,6 @@ import Hero from './components/Hero';
 import ProductCard from './components/ProductCard';
 import StylistAssistant from './components/StylistAssistant';
 import CartDrawer from './components/CartDrawer';
-import SocialFeed from './components/SocialFeed';
 import { Product, CartItem, Category } from './types';
 import { fetchProductsFromDb, fetchCategoriesFromDb } from './services/supabaseService';
 
@@ -181,9 +180,6 @@ const App: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* Social Feed Integration */}
-        <SocialFeed onAddToCart={addToCart} />
       </main>
 
       <footer className="bg-[#050505] pt-20 pb-10 border-t border-white/5">
