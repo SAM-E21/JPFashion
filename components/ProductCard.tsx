@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 
@@ -10,8 +9,8 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
   
-  // Detección mejorada: Verifica propiedad outOfStock O si el nombre incluye "agotado" (ignorando mayúsculas/minúsculas)
-  const isAgotado = product.outOfStock || product.name.toLowerCase().includes('agotado');
+  // Detección mejorada: Verifica si el nombre incluye la palabra exacta "agotado" de forma insensible a mayúsculas/minúsculas
+  const isAgotado = product.outOfStock || /\bagotado\b/i.test(product.name);
 
   useEffect(() => {
     if (product.sizes && product.sizes.length > 0 && !isAgotado) {
@@ -27,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
   return (
     <div className={`group relative bg-[#0a0a0a] border overflow-hidden transition-all duration-500 flex flex-col h-full shadow-2xl ${
-      isAgotado ? 'border-white/5 grayscale-[0.8] opacity-70' : 'border-white/5 hover:border-gold/40 hover:shadow-gold/10'
+      isAgotado ? 'border-white/5 grayscale-[0.9] opacity-60' : 'border-white/5 hover:border-gold/40 hover:shadow-gold/10'
     }`}>
       
       {/* Badge de Categoría */}
@@ -43,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           src={product.image} 
           alt={product.name} 
           className={`w-full h-full object-cover transition-transform duration-[2000ms] ${
-            isAgotado ? 'scale-100 opacity-40' : 'group-hover:scale-110'
+            isAgotado ? 'scale-100 opacity-30' : 'group-hover:scale-110'
           }`}
         />
         
@@ -52,10 +51,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         {/* Sello de AGOTADO Estilizado */}
         {isAgotado && (
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="border border-gold/40 bg-black/60 backdrop-blur-sm px-6 py-3 rotate-[-5deg]">
-              <p className="text-gold font-serif italic text-xl tracking-widest uppercase">Agotado</p>
+            <div className="border border-gold/40 bg-black/80 backdrop-blur-md px-6 py-3 rotate-[-5deg] shadow-2xl">
+              <p className="text-gold font-serif italic text-xl tracking-[0.2em] uppercase">Agotado</p>
               <div className="h-[1px] w-full bg-gold/30 mt-1"></div>
-              <p className="text-[7px] text-white uppercase tracking-[0.4em] mt-1 text-center">Edición Limitada</p>
+              <p className="text-[6px] text-white/70 uppercase tracking-[0.5em] mt-2 text-center">Archivo JP Fashion</p>
             </div>
           </div>
         )}
@@ -75,10 +74,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       
       {/* Contenido del Card */}
       <div className="p-6 flex flex-col flex-1">
-        <h3 className={`text-lg font-serif mb-1 transition-colors ${isAgotado ? 'text-gray-400' : 'group-hover:text-gold'}`}>
+        <h3 className={`text-lg font-serif mb-1 transition-colors ${isAgotado ? 'text-gray-500' : 'group-hover:text-gold'}`}>
           {product.name}
         </h3>
-        <p className={`text-[10px] font-light italic mb-4 line-clamp-1 ${isAgotado ? 'text-gray-600' : 'text-gray-500'}`}>
+        <p className={`text-[10px] font-light italic mb-4 line-clamp-1 ${isAgotado ? 'text-gray-700' : 'text-gray-500'}`}>
           {product.miniDescription || product.description.substring(0, 40) + '...'}
         </p>
 
@@ -109,17 +108,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               <p className="text-[8px] text-gray-600 uppercase tracking-widest italic">Talla única</p>
             </div>
           ) : (
-             <div className="h-[42px] flex items-center">
-              <p className="text-[8px] text-red-900/50 uppercase tracking-[0.3em] font-bold">Sin stock disponible</p>
+             <div className="h-[42px] flex items-center border-t border-white/5 pt-4">
+              <p className="text-[8px] text-zinc-700 uppercase tracking-[0.4em] font-bold italic">Pieza No Disponible</p>
             </div>
           )}
           
           <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-            <span className={`text-sm font-medium tracking-widest ${isAgotado ? 'text-gray-600 line-through' : 'text-white'}`}>
+            <span className={`text-sm font-medium tracking-widest ${isAgotado ? 'text-zinc-800 line-through' : 'text-white'}`}>
               {typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : 'Consultar'}
             </span>
             {isAgotado && (
-              <span className="text-[8px] text-gold/50 uppercase tracking-widest">Próximamente</span>
+              <span className="text-[7px] text-gold/30 uppercase tracking-[0.3em]">Sold Out</span>
             )}
           </div>
         </div>
