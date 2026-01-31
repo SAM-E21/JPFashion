@@ -7,7 +7,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Función auxiliar para normalizar las tallas desde la DB
 const normalizeSizes = (sizes: any): string[] => {
   if (Array.isArray(sizes)) return sizes;
   if (typeof sizes === 'string') return sizes.split(',').map(s => s.trim()).filter(Boolean);
@@ -36,7 +35,8 @@ export const fetchProductsFromDb = async (): Promise<Product[]> => {
     sizes: normalizeSizes(p.sizes),
     fbId: p.fb_id,
     isSocial: p.is_social,
-    link: p.link
+    link: p.link,
+    outOfStock: p.is_out_of_stock // Asegúrate de tener esta columna en tu DB o cámbiala por la lógica que prefieras
   }));
 };
 
@@ -63,7 +63,8 @@ export const fetchSocialProducts = async (): Promise<Product[]> => {
     sizes: normalizeSizes(p.sizes),
     fbId: p.fb_id,
     isSocial: p.is_social,
-    link: p.link
+    link: p.link,
+    outOfStock: p.is_out_of_stock
   }));
 };
 

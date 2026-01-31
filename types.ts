@@ -9,8 +9,9 @@ export interface Product {
   miniDescription?: string;
   sizes?: string[];
   isSocial?: boolean;
-  fbId?: string; // Nuevo campo para sincronización con FB
+  fbId?: string;
   link?: string;
+  outOfStock?: boolean; // Nueva propiedad para productos agotados
 }
 
 export interface CartItem extends Product {

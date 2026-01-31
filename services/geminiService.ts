@@ -1,10 +1,23 @@
-
 import { GoogleGenAI } from "@google/genai";
 
-// Fix: Use process.env.API_KEY directly as required by standard initialization guidelines
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY});
+// Acceso seguro a la variable de entorno
+const getSafeApiKey = () => {
+  try {
+    return (typeof process !== 'undefined' && process.env && process.env.API_KEY) ? process.env.API_KEY : "";
+  } catch (e) {
+    return "";
+  }
+};
+
+const apiKey = getSafeApiKey();
+const ai = new GoogleGenAI({ apiKey });
 
 export const getStylistAdvice = async (userPrompt: string) => {
+  if (!apiKey) {
+    console.warn("JP Stylist: API Key no configurada. El asistente operará en modo limitado.");
+    return "Lo siento, mi conexión con el mundo de la alta costura está teniendo una breve interrupción. ¿En qué más puedo ayudarte?";
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
@@ -17,6 +30,6 @@ export const getStylistAdvice = async (userPrompt: string) => {
     return response.text;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "Lo siento, mi conexión con el mundo de la alta costura está teniendo una breve interrupción. ¿En qué más puedo ayudarte?";
+    return "Mi atelier está recibiendo nuevas colecciones justo ahora. Por favor, pregúntame de nuevo en unos instantes.";
   }
 };
