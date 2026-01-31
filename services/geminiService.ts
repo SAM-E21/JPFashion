@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 // Acceso seguro a la variable de entorno
 const getSafeApiKey = () => {
   try {
-    return (typeof process !== 'undefined' && process.env && process.env.API_KEY) ? process.env.API_KEY : "";
+    return (typeof process !== 'undefined' && import.meta.env  && import.meta.env.VITE_API_KEY ) ? import.meta.env.VITE_API_KEY  : "";
   } catch (e) {
     return "";
   }
