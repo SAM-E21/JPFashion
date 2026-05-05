@@ -6,7 +6,7 @@ import ProductCard from './components/ProductCard';
 import StylistAssistant from './components/StylistAssistant';
 import CartDrawer from './components/CartDrawer';
 import { Product, CartItem, Category } from './types';
-import { fetchProductsFromDb, fetchCategoriesFromDb } from './services/supabaseService';
+import { fetchProductsFromDb, fetchCategoriesFromDb, seedDatabase } from './services/supabaseService';
 
 const App: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -15,25 +15,54 @@ const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const loadData = async () => {
+    setIsLoading(true);
+    setLoadError(null);
+    console.log("Starting data load...");
+    try {
+      const [dbProducts, dbCategories] = await Promise.all([
+        fetchProductsFromDb(),
+        fetchCategoriesFromDb()
+      ]);
+      
+      if (dbProducts.length === 0 && dbCategories.length === 0) {
+        console.warn("No data returned from database. Check your tables and RLS policies.");
+      }
+
+      console.log("Products loaded:", dbProducts.length);
+      console.log("Categories loaded:", dbCategories.length);
+      setProducts(dbProducts);
+      setCategories(dbCategories);
+    } catch (error) {
+      console.error("Error loading initial data:", error);
+      setLoadError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        const [dbProducts, dbCategories] = await Promise.all([
-          fetchProductsFromDb(),
-          fetchCategoriesFromDb()
-        ]);
-        setProducts(dbProducts);
-        setCategories(dbCategories);
-      } catch (error) {
-        console.error("Error loading initial data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     loadData();
   }, []);
+
+  const handleSeed = async () => {
+    setIsSeeding(true);
+    try {
+      const success = await seedDatabase();
+      if (success) {
+        await loadData();
+      } else {
+        setLoadError("No se pudieron cargar los datos de prueba. Asegúrate de que las tablas existan y RLS esté configurado.");
+      }
+    } catch (error) {
+      setLoadError(error instanceof Error ? error.message : "Error al sembrar la base de datos.");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   const addToCart = (product: Product & { selectedSize?: string }) => {
     setCart(prev => {
@@ -128,9 +157,14 @@ const App: React.FC = () => {
 
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                {[1,2,3].map(i => <div key={i} className="h-96 bg-white/5 animate-pulse rounded-sm"></div>)}
+                {[1,2,3].map(i => <div key={i} className="h-96 bg-white/5 animate-pulse rounded-sm"></div>) }
               </div>
-            ) : (
+            ) : loadError ? (
+              <div className="text-center py-20 border border-red-500/20 bg-red-500/5">
+                <p className="text-red-400 font-serif italic mb-4">Error al conectar con la base de datos.</p>
+                <p className="text-xs text-gray-500 max-w-md mx-auto">{loadError}</p>
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 {filteredProducts.map((product) => (
                   <ProductCard 
@@ -139,6 +173,33 @@ const App: React.FC = () => {
                     onAddToCart={addToCart} 
                   />
                 ))}
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-24 border border-gold/20 bg-gold/5 rounded-sm">
+                <h3 className="text-2xl font-serif text-gold mb-4">Base de Datos Empty</h3>
+                <p className="text-gray-400 max-w-md mx-auto mb-8 text-sm leading-relaxed">
+                  Hemos detectado que las tablas están creadas pero no tienen contenido, o las políticas RLS están bloqueando el acceso.
+                </p>
+                <button 
+                  onClick={handleSeed}
+                  disabled={isSeeding}
+                  className="px-8 py-3 bg-gold text-black text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-white transition-colors disabled:opacity-50"
+                >
+                  {isSeeding ? 'Cargando...' : 'Cargar Datos de Prueba'}
+                </button>
+                <p className="text-[9px] text-gray-500 mt-4 uppercase tracking-widest">
+                  Esto insertará categorías y productos iniciales para que puedas ver el catálogo.
+                </p>
+              </div>
+            ) : (
+              <div className="text-center py-20 border border-white/5 bg-white/5">
+                <p className="text-gray-400 font-serif italic">No se encontraron productos en esta categoría.</p>
+                <button 
+                  onClick={() => setActiveCategory(null)}
+                  className="mt-4 text-gold uppercase tracking-widest text-[10px] border-b border-gold"
+                >
+                  Ver todo el catálogo
+                </button>
               </div>
             )}
           </div>
